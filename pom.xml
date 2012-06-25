@@ -43,7 +43,7 @@
 	</parent>
 
 	<properties>
-		<elasticsearch.version>0.19.4</elasticsearch.version>
+		<elasticsearch.version>0.19.2</elasticsearch.version>
 		<mongo-java-driver.version>2.7.2</mongo-java-driver.version>
 	</properties>
 
@@ -66,7 +66,7 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
+			<version>1.2.16</version>
 			<scope>runtime</scope>
 		</dependency>
 
