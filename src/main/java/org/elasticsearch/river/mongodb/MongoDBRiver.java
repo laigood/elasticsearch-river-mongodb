@@ -86,8 +86,8 @@ public class MongoDBRiver extends AbstractRiverComponent implements River {
   public final static String FILTER_FIELD         = "filter";
   public final static String PASSWORD_FIELD       = "db_password";
   public final static String USER_FIELD           = "db_user";
-  public final static String ADMIN_PASSWORD_FIELD = "admin_password";
-  public final static String ADMIN_USER_FIELD     = "admin_user";
+  public final static String ADMIN_PASSWORD_FIELD = "local_db_password";
+  public final static String ADMIN_USER_FIELD     = "local_db_user";
   public final static String SCRIPT_FIELD         = "script";
   public final static String COLLECTION_FIELD     = "collection";
   public final static String GRIDFS_FIELD         = "gridfs";
@@ -119,8 +119,8 @@ public class MongoDBRiver extends AbstractRiverComponent implements River {
   protected final boolean mongoGridFS;
   protected final String  dbUser;
   protected final String  dbPassword;
-  protected final String  adminUser;
-  protected final String  adminPassword;
+  protected final String  localDBUser;
+  protected final String  localDBPassword;
   protected final String  mongoOplogNamespace;
   
   protected final String    indexName;
@@ -163,11 +163,11 @@ public class MongoDBRiver extends AbstractRiverComponent implements River {
         dbPassword = "";
       }
       if (mongoSettings.containsKey(ADMIN_USER_FIELD) && mongoSettings.containsKey(ADMIN_PASSWORD_FIELD)) {
-        adminUser     = mongoSettings.get(ADMIN_USER_FIELD).toString();
-        adminPassword = mongoSettings.get(ADMIN_PASSWORD_FIELD).toString();
+        localDBUser     = mongoSettings.get(ADMIN_USER_FIELD).toString();
+        localDBPassword = mongoSettings.get(ADMIN_PASSWORD_FIELD).toString();
       } else {
-        adminUser = "";
-        adminPassword = "";
+        localDBUser = "";
+        localDBPassword = "";
       }
       
       if (mongoSettings.containsKey("fields")) {
@@ -182,8 +182,8 @@ public class MongoDBRiver extends AbstractRiverComponent implements River {
       mongoGridFS = false;
       dbUser = "";
       dbPassword = "";
-      adminUser = "";
-      adminPassword = "";
+      localDBUser = "";
+      localDBPassword = "";
     }
     mongoOplogNamespace = mongoDb + "." + mongoCollection;
 
@@ -382,9 +382,9 @@ public class MongoDBRiver extends AbstractRiverComponent implements River {
     private boolean asignCollections() {
       mongo.setReadPreference(ReadPreference.SECONDARY);
       oplogDb = mongo.getDB(MONGODB_LOCAL);
-      if (!adminUser.isEmpty() && !adminPassword.isEmpty()&&!authOplog) {
-        boolean auth = oplogDb.authenticate(adminUser,
-            adminPassword.toCharArray());
+      if (!localDBUser.isEmpty() && !localDBPassword.isEmpty()&&!authOplog) {
+        boolean auth = oplogDb.authenticate(localDBUser,
+            localDBPassword.toCharArray());
         if (auth == false) {
           logger.warn("Invalid credential");
           return false;
